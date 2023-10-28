@@ -1,9 +1,9 @@
 const router = require("express").Router()
-const StoresController = require("../controllers/StoresController")
+const StoreController = require("../controllers/StoresController")
 const checkToken = require("../utils/checkToken")
 
-router.get("/stores/find/all", checkToken, )
+router.get("/stores/find/all", checkToken, StoreController.newStore)
 
-router.post("/stores/create", checkToken, )
+router.post("/stores/create", checkToken, StoreController.findAllStores)
 
 module.exports = router

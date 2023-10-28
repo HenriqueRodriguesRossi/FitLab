@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const ProductSchema = new mongoose.Schema({
+const StoreSchema = new mongoose.Schema({
     //Dados pessoais
     razao_social: {
         type: String,
@@ -38,7 +38,7 @@ const ProductSchema = new mongoose.Schema({
         required: true
     },
     numero:{
-        type: String,
+        type: Number,
         required: true
     },
     bairro:{
@@ -62,3 +62,5 @@ const ProductSchema = new mongoose.Schema({
         default: new Date()
     }
 }, {versionKey: false})
+
+module.exports = mongoose.model("Store", StoreSchema)
