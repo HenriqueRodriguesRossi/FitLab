@@ -9,6 +9,9 @@ app.use(express.urlencoded({extended: true}))
 const UserRouter = require("./routes/UserRouter")
 app.use(UserRouter)
 
+const StoresRouter = require("./routes/StoresRouter")
+app.use(StoresRouter)
+
 app.listen(8080, ()=>{
     console.log("Server runing!")
 })
