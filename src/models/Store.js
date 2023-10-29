@@ -20,6 +20,10 @@ const StoreSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    senha:{
+        type: String, 
+        required: true
+    },
     telefone:{
         type: String,
         required: false
