@@ -49,7 +49,7 @@ const StoreSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    estatdo: {
+    estado: {
         type: String,
         required: true
     },

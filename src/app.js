@@ -12,6 +12,6 @@ app.use(UserRouter)
 const StoresRouter = require("./routes/StoresRouter")
 app.use(StoresRouter)
 
-app.listen(8080, ()=>{
+app.listen(3000, ()=>{
     console.log("Server runing!")
 })
