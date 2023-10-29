@@ -158,3 +158,69 @@ exports.StoreLogin = async (req, res) => {
         })
     }
 }
+
+exports.findeStoreById = async (req, res)=>{
+    try{
+        const {store_id} = req.params
+
+        if(!store_id){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o id da loja na url da requisição!"
+            })
+        }
+
+        const findStoreById = await Store({
+            _id: store_id
+        })
+
+        if(!findStoreById){
+            return res.status(404).send({
+                mensagem: "Nenhuma loja foi encontrada!"
+            })
+        }else{
+            return res.status(200).send({
+                mensagem: "Busca efetuada com sucesso!",
+
+                store_details: findStoreById
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao buscar a loja!"
+        })
+    }
+}
+
+exports.findStoresByName = async(req, res)=>{
+    try{
+        const {razao_social} = req.body
+
+        if(!razao_social){
+            return res.status(400).send({
+                mensagem: "Por favor, digite a razão social da loja!"
+            })
+        }
+
+        const store = await Store.findOne({razao_social})
+        
+        if(!store){
+            return res.status(404).send({
+                mensagem: "Nenhuma empresa foi encontrada!"
+            })
+        }else{
+            return res.status(200).send({
+                mensagem: "Busca efetuada com sucesso!",
+
+                store_details: store
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao pesquisar a loja!"
+        })
+    }
+}
