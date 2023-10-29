@@ -36,11 +36,12 @@ exports.newUser = async (req, res)=>{
             })
         }
 
-        const passwordHash = await bcry
+        const cpfHash = await bcrypt.hash(cpf, 10)
+        const passwordHash = await bcrypt.hash(password, 10)
 
         const newUser = new User({
             full_name,
-            cpf,
+            cpf: cpfHash,
             email,
             password: passwordHash
         })
