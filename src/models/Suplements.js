@@ -10,7 +10,7 @@ const SuplementSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
-    value:{
+    unit_value:{
         type: Number,
         required: true
     },
@@ -18,7 +18,7 @@ const SuplementSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    sotre_id:{
+    store_id:{
         type: String,
         required: true
     },
