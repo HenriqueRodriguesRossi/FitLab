@@ -109,3 +109,27 @@ exports.login = async (req, res)=>{
         })
     }
 }
+
+exports.findAllUsers = async (req, res)=>{
+    try{
+        const findAllUsers = await User.find()
+
+        if(!findAllUsers || findAllUsers.length == 0){
+            return res.status(404).send({
+                mensagem: "Nenhum usuário encontrado!"
+            })
+        }else {
+            return res.status(200).send({
+                mensagem: "Busca efetuda com sucesso!",
+
+                users:  [findAllUsers]
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao retornar os usuários!"
+        })
+    }
+}
