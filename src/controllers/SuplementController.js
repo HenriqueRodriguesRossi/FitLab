@@ -37,6 +37,7 @@ exports.newSuplement = async (req, res) => {
         await SuplementSchema.validate(req.body, { abortEarly: false })
 
         const nameSuplementValidate = await Suplement.findOne({
+            _id: store_id,
             name
         })
 
@@ -119,6 +120,37 @@ exports.findAllSuplements = async (req, res)=>{
 
         return res.status(500).send({
             mensagem: "Erro ao retornar os suplementos cadastrados!"
+        })
+    }
+}
+
+exports.findSuplementsByName = async (req, res)=>{
+    try{
+        const {nome} = req.body
+
+        const findSuplementsByName = await Suplement.find({
+            name: nome
+        })
+
+        if(findSuplementsByName.length == 0 || !findSuplementsByName){
+            return res.status(404).send({
+                mensagem: "Nunhum suplemento encontrado!"
+            })
+        }else{
+            return res.status(200).send({
+                details: {
+                    nome: findSuplementsByName.name,
+                    unit_value: findSuplementsByName.unit_value,
+                    photo: findSuplementsByName.photo,
+                    store_id: findSuplementsByName._id
+                }
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao pesquisar os suplementos!"
         })
     }
 }

@@ -7,8 +7,6 @@ const checkToken = require("../utils/checkToken")
 //Funcionalidades exclusivas para lojas
 router.post("/suplements/new/:store_id", checkStoreToken, upload.single("file"), SuplementController.newSuplement)
 
-router.get("/suplements/find/all/:store_id", checkStoreToken,)
-router.get("/suplements/find/name",checkStoreToken,)
 router.get("/suplements/find/quantity", checkStoreToken,)
 
 router.put("/suplements/alter/quantity_stock", checkStoreToken)
@@ -16,7 +14,9 @@ router.put("/suplements/alter/unit_value", checkStoreToken,)
 
 router.delete("/suplements/delete/:suplement_id", checkStoreToken)
 
-//Funcionalidades exclusivas para usuários
-router.get("/suplements/find/all/:store_id", checkToken, SuplementController.findAllSuplements)
+//Funcionalidades gerais
+router.get("/suplements/find/all/:store_id", SuplementController.findAllSuplements)
+router.get("/suplements/find/name", SuplementController.findSuplementsByName)
+
 
 module.exports = router
