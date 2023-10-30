@@ -224,3 +224,107 @@ exports.findStoresByName = async(req, res)=>{
         })
     }
 }
+
+exports.alterStoreEmail = async(req, res)=>{
+    try{
+        const {store_id} = req.params
+
+        if(!store_id){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o id da loja no url da requisição!"
+            })
+        }
+
+        const {newEmail} = req.body
+        const newEmailValidate = await Store.findOne({
+            email: newEmail
+        })
+
+        if(!newEmail){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o novo email!"
+            })
+        }else if(newEmailValidate){
+            return res.status(422).send({
+                mensagem: "Esse email já está em uso!"
+            })
+        }
+
+        const alterStoreEmail = await Store.findByIdAndUpdate({
+            email: newEmail
+        })
+
+        if(!alterStoreEmail){
+            return res.status(404).send({
+                mensagem: "Nenhuma loja foi encontrada!"
+            })
+        }else{
+            return res.status(200).send({
+                mensagem: "Busca efetuada com sucesso!",
+
+                new_email: alterStoreEmail.email
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao alterar o email!"
+        })
+    }
+}
+
+exports.alterStorePassword = async(req, res) =>{
+    try{
+        const {store_id} = req.params
+
+        if(!store_id){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o id da loja!"
+            })
+        }
+
+        const {new_password, confirm_new_pass} = req.body
+
+        const newPasswordSchema = yup.object().shape({
+            new_password: yup.string().required("O campo nova senha é obrigatório!").min(8, "A nova senha deve ter no mínimo 8 caracteres!").max(30, "A senha deve ter no máximo 30 caracteres!"),
+
+            confirm_new_pass: yup.string().required("A confirmação da senha é obrigatória!").oneOf([password, null], "As senhas devem ser iguais!")
+        })
+
+        await newPasswordSchema.validate(req.body, {abortEarly: false})
+
+        const newPassHash = await bcrypt.hash(new_password, 10)
+
+        const alterStorePass = await Store.findByIdAndUpdate({
+            _id: store_id,
+            senha: newPassHash 
+        })
+
+        if(!alterStorePass){
+            return res.status(404).send({
+                mensagem: "Nenhuma loja encontrada!"
+            })
+        }else {
+            return res.status(200).send({
+                mensagem: "Senha alterada com sucesso!"
+            })
+        }
+    }catch(error){
+        if(error instanceof yup.ValidationError){
+            const errors = [captureErrorYup(error)]
+
+            return res.status(422).send({
+                mensagem: "Erro ao alterar a senha!",
+                
+                erros: errors
+            })
+        }else{
+            console.log(error)
+
+            return res.status(500).send({
+                mensagem: "Erro ao alterar a senha!"
+            })
+        }
+    }
+}

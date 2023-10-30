@@ -10,8 +10,8 @@ router.get("/stores/find/all", checkToken,  StoreController.findAllStores),
 router.get("/stores/find/:sotre_id", checkToken, StoreController.findeStoreById)
 router.get("/stores/find/razao_social",checkToken, StoreController.findStoresByName)
 
-router.put("/stores/alter/email/:store_id", checkStoreToken,)
-router.put("/stores/alter/pass/:store_id", checkStoreToken,)
+router.put("/stores/alter/email/:store_id", checkStoreToken, StoreController.alterStoreEmail)
+router.put("/stores/alter/pass/:store_id", checkStoreToken, StoreController.alterStorePassword)
 
 router.delete("/stores/delete/:store_id", checkStoreToken,)
 
