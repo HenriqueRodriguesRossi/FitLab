@@ -13,6 +13,6 @@ router.get("/stores/find/razao_social",checkToken, StoreController.findStoresByN
 router.put("/stores/alter/email/:store_id", checkStoreToken, StoreController.alterStoreEmail)
 router.put("/stores/alter/pass/:store_id", checkStoreToken, StoreController.alterStorePassword)
 
-router.delete("/stores/delete/:store_id", checkStoreToken,)
+router.delete("/stores/delete/:store_id", checkStoreToken, StoreController.deleteStoreAccount)
 
 module.exports = router

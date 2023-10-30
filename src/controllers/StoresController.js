@@ -159,11 +159,11 @@ exports.StoreLogin = async (req, res) => {
     }
 }
 
-exports.findeStoreById = async (req, res)=>{
-    try{
-        const {store_id} = req.params
+exports.findeStoreById = async (req, res) => {
+    try {
+        const { store_id } = req.params
 
-        if(!store_id){
+        if (!store_id) {
             return res.status(400).send({
                 mensagem: "Por favor, forneça o id da loja na url da requisição!"
             })
@@ -173,18 +173,18 @@ exports.findeStoreById = async (req, res)=>{
             _id: store_id
         })
 
-        if(!findStoreById){
+        if (!findStoreById) {
             return res.status(404).send({
                 mensagem: "Nenhuma loja foi encontrada!"
             })
-        }else{
+        } else {
             return res.status(200).send({
                 mensagem: "Busca efetuada com sucesso!",
 
                 store_details: findStoreById
             })
         }
-    }catch(error){
+    } catch (error) {
         console.log(error)
 
         return res.status(500).send({
@@ -193,30 +193,30 @@ exports.findeStoreById = async (req, res)=>{
     }
 }
 
-exports.findStoresByName = async(req, res)=>{
-    try{
-        const {razao_social} = req.body
+exports.findStoresByName = async (req, res) => {
+    try {
+        const { razao_social } = req.body
 
-        if(!razao_social){
+        if (!razao_social) {
             return res.status(400).send({
                 mensagem: "Por favor, digite a razão social da loja!"
             })
         }
 
-        const store = await Store.findOne({razao_social})
-        
-        if(!store){
+        const store = await Store.findOne({ razao_social })
+
+        if (!store) {
             return res.status(404).send({
                 mensagem: "Nenhuma empresa foi encontrada!"
             })
-        }else{
+        } else {
             return res.status(200).send({
                 mensagem: "Busca efetuada com sucesso!",
 
                 store_details: store
             })
         }
-    }catch(error){
+    } catch (error) {
         console.log(error)
 
         return res.status(500).send({
@@ -225,26 +225,26 @@ exports.findStoresByName = async(req, res)=>{
     }
 }
 
-exports.alterStoreEmail = async(req, res)=>{
-    try{
-        const {store_id} = req.params
+exports.alterStoreEmail = async (req, res) => {
+    try {
+        const { store_id } = req.params
 
-        if(!store_id){
+        if (!store_id) {
             return res.status(400).send({
                 mensagem: "Por favor, forneça o id da loja no url da requisição!"
             })
         }
 
-        const {newEmail} = req.body
+        const { newEmail } = req.body
         const newEmailValidate = await Store.findOne({
             email: newEmail
         })
 
-        if(!newEmail){
+        if (!newEmail) {
             return res.status(400).send({
                 mensagem: "Por favor, forneça o novo email!"
             })
-        }else if(newEmailValidate){
+        } else if (newEmailValidate) {
             return res.status(422).send({
                 mensagem: "Esse email já está em uso!"
             })
@@ -254,18 +254,18 @@ exports.alterStoreEmail = async(req, res)=>{
             email: newEmail
         })
 
-        if(!alterStoreEmail){
+        if (!alterStoreEmail) {
             return res.status(404).send({
                 mensagem: "Nenhuma loja foi encontrada!"
             })
-        }else{
+        } else {
             return res.status(200).send({
                 mensagem: "Busca efetuada com sucesso!",
 
                 new_email: alterStoreEmail.email
             })
         }
-    }catch(error){
+    } catch (error) {
         console.log(error)
 
         return res.status(500).send({
@@ -274,17 +274,17 @@ exports.alterStoreEmail = async(req, res)=>{
     }
 }
 
-exports.alterStorePassword = async(req, res) =>{
-    try{
-        const {store_id} = req.params
+exports.alterStorePassword = async (req, res) => {
+    try {
+        const { store_id } = req.params
 
-        if(!store_id){
+        if (!store_id) {
             return res.status(400).send({
                 mensagem: "Por favor, forneça o id da loja!"
             })
         }
 
-        const {new_password, confirm_new_pass} = req.body
+        const { new_password, confirm_new_pass } = req.body
 
         const newPasswordSchema = yup.object().shape({
             new_password: yup.string().required("O campo nova senha é obrigatório!").min(8, "A nova senha deve ter no mínimo 8 caracteres!").max(30, "A senha deve ter no máximo 30 caracteres!"),
@@ -292,39 +292,71 @@ exports.alterStorePassword = async(req, res) =>{
             confirm_new_pass: yup.string().required("A confirmação da senha é obrigatória!").oneOf([password, null], "As senhas devem ser iguais!")
         })
 
-        await newPasswordSchema.validate(req.body, {abortEarly: false})
+        await newPasswordSchema.validate(req.body, { abortEarly: false })
 
         const newPassHash = await bcrypt.hash(new_password, 10)
 
         const alterStorePass = await Store.findByIdAndUpdate({
             _id: store_id,
-            senha: newPassHash 
+            senha: newPassHash
         })
 
-        if(!alterStorePass){
+        if (!alterStorePass) {
             return res.status(404).send({
                 mensagem: "Nenhuma loja encontrada!"
             })
-        }else {
+        } else {
             return res.status(200).send({
                 mensagem: "Senha alterada com sucesso!"
             })
         }
-    }catch(error){
-        if(error instanceof yup.ValidationError){
+    } catch (error) {
+        if (error instanceof yup.ValidationError) {
             const errors = [captureErrorYup(error)]
 
             return res.status(422).send({
                 mensagem: "Erro ao alterar a senha!",
-                
+
                 erros: errors
             })
-        }else{
+        } else {
             console.log(error)
 
             return res.status(500).send({
                 mensagem: "Erro ao alterar a senha!"
             })
         }
+    }
+}
+
+exports.deleteStoreAccount = async (req, res) => {
+    try {
+        const { store_id } = req.params
+
+        if (!store_id) {
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o id da loja na URL da requisição!"
+            })
+        }
+
+        const deleteStoreAccount = await Store.findByIdAndDelete({
+            _id: store_id
+        })
+
+        if(!deleteStoreAccount){
+            return res.status(404).send({
+                mensagem: "Nenhuma loja foi encontrada!"
+            })
+        }else {
+            return res.status(200).send({
+                mensagem: "Conta exluída com sucesso!"
+            })
+        }
+    } catch (error) {
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao excluir a conta!"
+        })
     }
 }
