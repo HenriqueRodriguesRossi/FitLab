@@ -154,3 +154,38 @@ exports.findSuplementsByName = async (req, res)=>{
         })
     }
 }
+
+exports.findSuplementsByQuantity = async(req, res)=>{
+    try{
+        const {store_id} = req.params
+        const {quantity_in_stock} = req.body
+
+        if(!store_id || !quantity_in_stock){
+            return res.status(422).send({
+                mensagem: "Forneça todas as informações necessárias!"
+            })
+        }else{
+            const findSuplementsByQuantity = await Suplement.find({
+                _id: store_id,
+
+                quantity_in_stock
+            })
+
+            if(findSuplementsByQuantity.length == 0 || !findSuplementsByQuantity){
+                return res.status(404).send({
+                    mensagem: "Nenhum suplemento encontrado!"
+                })
+            }else{
+                return res.status(200).send({
+                    mensagem: "Sucesso!",
+
+                    products_details: findSuplementsByQuantity
+                })
+            }
+        }
+    }catch(error){
+        return res.status(500).send({
+            mensagem: "Erro ao buscar os suplementos!"
+        })
+    }
+}
