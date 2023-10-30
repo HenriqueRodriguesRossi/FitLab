@@ -167,3 +167,35 @@ exports.findUserById = async (req, res)=>{
         })
     }
 }
+
+exports.findUserByName = async (req, res)=>{
+    try{
+        const {name} = req.body
+
+        if(!name){
+            return res.status(400).send({
+                mensagem: "Por favor, digite um nome!"          
+            })
+        }
+
+        const findUserByName = await User.find({
+            full_name: name
+        })
+
+        if(!findUserByName || findUserByName.length == 0){
+            return res.status(404).send({
+                mensagem: "Nenhum funcionário encontrado!"
+            })
+        }else {
+            return res.status(200).send({
+                details: findUserByName
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao buscar o usuário!"
+        })
+    }
+}
