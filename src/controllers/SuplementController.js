@@ -84,3 +84,41 @@ exports.newSuplement = async (req, res) => {
         }
     }
 }
+
+exports.findAllSuplements = async (req, res)=>{
+    try{
+      const {store_id} = req.params
+
+      if(!store_id){
+        return res.status(400).send({
+            mensagem: "Por favor, forneça o id da loja!"
+        })
+      }else{
+        const findAllSuplements = await Suplement.find({
+            store_id: store_id,
+        })
+
+        if(!findAllSuplements || findAllSuplements.length == 0){
+            return res.status(404).send({
+                mensagem: "Nenhum produto encontrado!"
+            })
+        }else{
+            return res.status(200).send({
+                mensagem: "Busca efetuada com sucesso!",
+
+                details:{
+                    nome_do_suplemento: name,
+                    valor: unit_value,
+                    foto: photo
+                }
+            })
+        }
+      }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao retornar os suplementos cadastrados!"
+        })
+    }
+}
