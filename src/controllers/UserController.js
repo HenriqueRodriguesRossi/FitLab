@@ -133,3 +133,37 @@ exports.findAllUsers = async (req, res)=>{
         })
     }
 }
+
+exports.findUserById = async (req, res)=>{
+    try{
+        const {user_id} = req.params
+
+        if(!user_id){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça id do usuário!"
+            })
+        }
+
+        const findUserById = await User.findById({
+            _id: user_id
+        })
+
+        if(!findUserById){
+            return res.status(404).send({
+                mensagem: "Nenhum usuário encontrado!"
+            })
+        }else {
+            return res.status(200).send({
+                mensagem: "Usuário encontrado!",
+
+                user_details: [findUserById]
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao buscar o usuário!"
+        })
+    }
+}

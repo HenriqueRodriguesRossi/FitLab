@@ -6,11 +6,11 @@ mongoose.connect(mongoUri)
 const connection = mongoose.connection
 
 connection.on("error", (error)=>{
-    console.log("Erro ao conectar: " + error)
+     console.log("Error connecting: " + error)
 })
 
 connection.on("open", ()=>{
-    console.log("Conectado com sucesso!")
+     console.log("Connected successfully!")
 })
 
 module.exports = mongoose
