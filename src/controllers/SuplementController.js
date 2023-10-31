@@ -189,3 +189,147 @@ exports.findSuplementsByQuantity = async(req, res)=>{
         })
     }
 }
+
+exports.alterAmount = async(req, res)=>{
+    try{
+        const {suplement_id} = req.params
+        const {new_amount} = req.body
+
+        if(!suplement_id){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o id do suplemento!"
+            })
+        }else if(!new_amount){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça a nova quantidade do suplemento!"
+            })
+        }
+
+        const alterAmount = await Suplement.findByIdAndUpdate({
+            _id: suplement_id,
+
+            quantity_in_stock: new_amount
+        })
+
+        if(!alterAmount){
+            return res.status(404).send({
+                mensagem: "Nenhum suplemento encontrado!"
+            })
+        }else{
+            return res.status(200).send({
+                mensagem: "Quantidade alterada com sucesso!",
+
+                details:{
+                    suplement_name: alterAmount.name,
+                    new_amount: alterAmount.quantity_in_stock
+                }
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao alterar a quantidade!"
+        })
+    }
+}
+
+exports.alterValue = async (req, res)=>{
+    try{
+        const {suplement_id} = req.params
+        const {new_value} = req.body
+
+        if(!suplement_id){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o id do suplemento!"
+            })
+        }else if(!new_value){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o novo valor!"
+            })
+        }
+
+        const alterValue = await Suplement.findByIdAndUpdate({
+            _id: suplement_id,
+
+            unit_value: new_value
+        })
+
+        if(!alterValue){
+            return res.status(404).send({
+                mensagem: "Nenhum suplemento encontrado!"
+            })
+        }else{
+            return res.status(200).send({
+                mensagem: "Valor alterado com sucesso!",
+
+                details:{
+                    suplement_name: alterAmount.name,
+                    new_value: alterAmount.unit_value
+                }
+            })
+        }
+    }catch(error){
+        console.log(error)
+        return res.status(500).send({
+            mensagem: "Erro ao alterar o valor do suplemento!"
+        })
+    }
+}
+
+exports.deleteSuplement = async (req, res)=>{
+    try{
+        const {suplement_id} = req.params
+
+        if(!suplement_id){
+            return res.status(400).send({
+                mensagem: "Por favor, forneça o id do suplemento!"
+            })
+        }
+
+        const deleteSuplement = await Suplement.findByIdAndDelete({
+            _id: suplement_id
+        })
+
+        if(!deleteSuplement){
+            return res.status(404).send({
+                mensagem: "Nenhum suplemento encontrado!"
+            })
+        }else {
+            return res.status(200).send({
+                mensagem: "Suplemento excluído com sucesso!"
+            })
+        }
+    }catch(error){
+        console.log(error)
+        return res.status(500).send({
+            mensagem: "Erro ao excluir o suplemento!"
+        })
+    }
+}
+
+exports.findAll = async (req, res)=>{
+    try{
+        const findAll = await Suplement.find()
+
+        if(!findAll){
+            return res.status(404).send({
+                mensagem: "Erro ao listar todos os suplementos!"
+            })
+        }else {
+            return res.status(200).send({
+                all_suplements:{
+                    name: findAll.name,
+                    foto: findAll.photo,
+                    value: findAll.unit_value 
+                }
+            })
+        }
+    }catch(error){
+        console.log(error)
+
+        return res.status(500).send({
+            mensagem: "Erro ao listar todos os suplementos!"
+        })
+    }
+}

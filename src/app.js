@@ -12,6 +12,9 @@ app.use(UserRouter)
 const StoresRouter = require("./routes/StoresRouter")
 app.use(StoresRouter)
 
+const SuplementRouter = require("./routes/SuplementsRouter")
+app.use(SuplementRouter)
+
 app.listen(3000, ()=>{
     console.log("Server runing!")
 })
