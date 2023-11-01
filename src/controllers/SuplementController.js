@@ -159,10 +159,10 @@ exports.findSuplementsByQuantity = async(req, res)=>{
             const findSuplementsByQuantity = await Suplement.find({
                 _id: store_id,
 
-                quantity_in_stock
+                quantity_in_stock: quantity_in_stock
             })
 
-            if(findSuplementsByQuantity.length == 0 || !findSuplementsByQuantity){
+            if(findSuplementsByQuantity.length == 0){
                 return res.status(404).send({
                     mensagem: "Nenhum suplemento encontrado!"
                 })
@@ -181,49 +181,40 @@ exports.findSuplementsByQuantity = async(req, res)=>{
     }
 }
 
-exports.alterAmount = async(req, res)=>{
-    try{
-        const {suplement_id} = req.params
-        const {new_amount} = req.body
+exports.alterAmount = async (req, res) => {
+  try {
+    const { suplement_id } = req.params;
+    const { new_amount } = req.body;
 
-        if(!suplement_id){
-            return res.status(400).send({
-                mensagem: "Por favor, forneça o id do suplemento!"
-            })
-        }else if(!new_amount){
-            return res.status(400).send({
-                mensagem: "Por favor, forneça a nova quantidade do suplemento!"
-            })
-        }
-
-        const alterAmount = await Suplement.findByIdAndUpdate({
-            _id: suplement_id,
-
-            quantity_in_stock: new_amount
-        })
-
-        if(!alterAmount){
-            return res.status(404).send({
-                mensagem: "Nenhum suplemento encontrado!"
-            })
-        }else{
-            return res.status(200).send({
-                mensagem: "Quantidade alterada com sucesso!",
-
-                details:{
-                    suplement_name: alterAmount.name,
-                    new_amount: alterAmount.quantity_in_stock
-                }
-            })
-        }
-    }catch(error){
-        console.log(error)
-
-        return res.status(500).send({
-            mensagem: "Erro ao alterar a quantidade!"
-        })
+    if (!suplement_id) {
+      return res.status(400).json({ mensagem: "Por favor, forneça o ID do suplemento!" });
     }
-}
+
+    if (!new_amount) {
+      return res.status(400).json({ mensagem: "Por favor, forneça a nova quantidade do suplemento!" });
+    }
+
+    const suplement = await Suplement.findById(suplement_id);
+
+    if (!suplement) {
+      return res.status(404).json({ mensagem: "Nenhum suplemento encontrado!" });
+    }
+
+    suplement.quantity_in_stock = new_amount;
+    await suplement.save();
+
+    return res.status(200).json({
+      mensagem: "Quantidade alterada com sucesso!",
+      details: {
+        suplement_name: suplement.name,
+        new_amount: suplement.quantity_in_stock,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ mensagem: "Erro ao alterar a quantidade!" });
+  }
+};
 
 exports.alterValue = async (req, res)=>{
     try{
@@ -255,8 +246,8 @@ exports.alterValue = async (req, res)=>{
                 mensagem: "Valor alterado com sucesso!",
 
                 details:{
-                    suplement_name: alterAmount.name,
-                    new_value: alterAmount.unit_value
+                    suplement_name: alterValue.name,
+                    new_value: alterValue.unit_value
                 }
             })
         }
@@ -303,9 +294,9 @@ exports.findAll = async (req, res)=>{
     try{
         const findAll = await Suplement.find()
 
-        if(!findAll){
+        if(findAll.length == 0){
             return res.status(404).send({
-                mensagem: "Erro ao listar todos os suplementos!"
+                mensagem: "Nenhum produto encontrado!"
             })
         }else {
             return res.status(200).send({

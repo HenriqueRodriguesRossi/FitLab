@@ -16,6 +16,6 @@ router.delete("/suplements/delete/:suplement_id", checkStoreToken, SuplementCont
 //Funcionalidades gerais
 router.get("/suplements/find/all/:store_id", SuplementController.findAllSuplements)
 router.get("/suplements/find/name", SuplementController.findSuplementsByName)
-router.get("/finda/all", SuplementController.findAll)
+router.get("/find/all", SuplementController.findAll)
 
 module.exports = router
