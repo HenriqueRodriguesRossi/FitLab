@@ -3,6 +3,7 @@ const yup = require("yup");
 const captureErrorYup = require("../utils/captureErrorYup");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
+const jwt = require("jsonwebtoken")
 
 exports.newStore = async (req, res) => {
     try {
@@ -134,22 +135,41 @@ exports.findAllStores = async (req, res) => {
 
 exports.StoreLogin = async (req, res) => {
     try {
-        const { email, password } = req.body
+        const { email, senha } = req.body
 
-        if (!email || !password) {
+        if (!email || !senha) {
             return res.status(400).send({
                 mensagem: "Email e senha são obrigatórios!"
             })
         }
 
-        const verificaSeEmailExiste = await Store.findOne({ email })
-        const verificaSenha = await bcrypt.compare(password, verificaSeEmailExiste.password)
+        const store = await Store.findOne({ email })
 
-        if (!verificaSeEmailExiste || !verificaSenha) {
+        if (!store) {
             return res.status(422).send({
                 mensagem: "Email ou senha estão incorretos!"
             })
         }
+
+        const verificaSenha = await bcrypt.compare(senha, store.senha)
+
+        if(!verificaSenha){
+            return res.status(422).send({
+                mensagem: "Email ou senha estão incorretos!"
+            })
+        }
+
+        const secret = process.env.STORE_SECRET
+
+        const token = jwt.sign({
+            _id: store.id
+        }, secret)
+
+        return res.status(200).send({
+            mensagem: "Login efetuado com sucesso!",
+            token: token,
+            store_id: store.id
+        })
     } catch (error) {
         console.log(error)
 
@@ -169,7 +189,7 @@ exports.findeStoreById = async (req, res) => {
             })
         }
 
-        const findStoreById = await Store({
+        const findStoreById = await Store.findById({
             _id: store_id
         })
 
