@@ -6,7 +6,7 @@ function checkToken(req, res, next) {
 
     if (!token) {
         return res.status(401).json({
-            menssagem: "Nenhum token encontrado!"
+            mensagem: "Nenhum token encontrado!"
         });
     }
 
@@ -15,12 +15,12 @@ function checkToken(req, res, next) {
 
         const decoded = jwt.verify(token, secret);
 
-        req.user = decoded;
+        req.store = decoded;
 
         next();
     } catch (err) {
         return res.status(401).json({
-            menssagem: "Token inválido ou expirado!"
+            mensagem: "Token inválido ou expirado!"
         });
     }
 }
