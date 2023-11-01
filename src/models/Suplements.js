@@ -14,7 +14,7 @@ const SuplementSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    photo:{
+    src:{
         type: String,
         required: true
     },
